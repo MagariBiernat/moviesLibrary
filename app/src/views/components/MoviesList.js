@@ -1,12 +1,19 @@
 import axios from "axios"
 import React from "react"
-
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
 import styled from "styled-components"
+
+import {
+  AiOutlineLeft as ArrowLeft,
+  AiOutlineRight as ArrowRight,
+} from "react-icons/ai"
 const API_KEY = process.env.REACT_APP_API_KEY
 
 const MoviesList = ({ title, genreId, setId }) => {
   const [movies, setMovies] = React.useState(undefined)
-  const sliderRef = React.useRef(null)
+
   React.useEffect(() => {
     const fetchMovies = async () => {
       await axios(
@@ -23,19 +30,34 @@ const MoviesList = ({ title, genreId, setId }) => {
 
   if (movies === undefined) return null
 
-  const handleLeft = () => {
-    if (sliderRef) {
-      sliderRef.current.scrollLeft +=
-        sliderRef?.current?.children[0]?.offsetWidth
-    }
+  function SampleNextArrow(props) {
+    const { style, onClick } = props
+    return (
+      <div className="prevArrow" style={{ ...style }} onClick={onClick}>
+        <ArrowLeft />
+      </div>
+    )
   }
 
-  const handleRight = () => {
-    if (sliderRef) {
-      sliderRef.current.scrollLeft -=
-        sliderRef?.current?.children[0]?.offsetWidth
-    }
+  function SamplePrevArrow(props) {
+    const { style, onClick } = props
+    return (
+      <div className="nextArrow" style={{ ...style }} onClick={onClick}>
+        <ArrowRight />
+      </div>
+    )
   }
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 700,
+    slidesToShow: 6,
+    slidesToScroll: 2,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  }
+
   return (
     <Wrapper>
       <div className="titleContainer">
@@ -43,23 +65,17 @@ const MoviesList = ({ title, genreId, setId }) => {
         <span className="browse">Browse all </span>
       </div>
       <div className="moviesContainer">
-        <button className="arrowLeft" onClick={handleLeft}>
-          {"<="}
-        </button>
-        <button className="arrowRight" onClick={handleRight}>
-          {"=>"}
-        </button>
-        <div className="moviesSlider" ref={sliderRef}>
+        <Slider {...settings}>
           {movies.map((item, index) => (
-            <div key={index} onClick={() => setId(item.id)}>
+            <SliderElement key={index} onClick={() => setId(item.id)}>
               <p className="title"> {item.title} </p>
               <img
                 alt=""
                 src={`https://image.tmdb.org/t/p/original${item.backdrop_path}`}
               />
-            </div>
+            </SliderElement>
           ))}
-        </div>
+        </Slider>
       </div>
     </Wrapper>
   )
@@ -130,65 +146,89 @@ const Wrapper = styled.div`
       cursor: pointer;
     }
 
-    > button.arrowLeft {
-      left: 0;
-    }
-
-    > button.arrowRight {
-      right: 0;
-    }
-
     > div.moviesSlider {
       display: flex;
       width: auto;
       overflow-y: hidden;
 
       > div {
-        position: relative;
-        min-height: 128px;
-        min-width: 228px;
-        padding-right: 2px;
-        cursor: pointer;
+      }
+    }
 
-        > p.title {
-          position: absolute;
-          display: none;
-          left: 5%;
-          top: 5%;
-          width: 80%;
-          font-size: 1rem;
-          color: white;
-          color: rgba(255, 255, 255, 0.8);
-          z-index: 25;
-          letter-spacing: 2px;
-          text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
-        }
+    .prevArrow {
+      position: absolute;
+      left: 0px;
+      top: 50%;
+      z-index: 500;
+      cursor: pointer;
+      transform: translateY(-50%);
+      > svg {
+        font-size: 32px;
+        color: White;
+      }
+    }
 
-        > img {
-          width: 98%;
-          height: 96%;
-          border-radius: 6px;
-          transition: 0.2s ease opacity;
-        }
+    .nextArrow {
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      z-index: 150;
+      cursor: pointer;
+      transform: translateY(-50%);
+      > svg {
+        font-size: 32px;
+        color: White;
+      }
+    }
+  }
+`
 
-        :hover > p.title {
-          display: block;
-        }
+const SliderElement = styled.div`
+  position: relative;
+  min-height: 128px;
+  min-width: 228px;
+  padding-right: 2px;
+  cursor: pointer;
 
-        :hover > img {
-          opacity: 0.25;
-        }
+  > p.title {
+    position: absolute;
+    display: none;
+    left: 5%;
+    top: 5%;
+    width: 80%;
+    font-size: 1rem;
+    color: white;
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 25;
+    letter-spacing: 2px;
+    text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
+  }
 
-        :after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.15);
-        }
-        /*
+  > img {
+    width: 98%;
+    height: 96%;
+    border-radius: 6px;
+    transition: 0.2s ease opacity;
+  }
+
+  :hover > p.title {
+    display: block;
+  }
+
+  :hover > img {
+    opacity: 0.25;
+  }
+
+  :after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  /*
         :before {
           content: "";
           position: absolute;
@@ -197,10 +237,7 @@ const Wrapper = styled.div`
           bottom: 0;
           height: 100%;
           background: linear-gradient(to bottom, transparent 0%, black 140%);
-        } */
-      }
-    }
-  }
+    */
 `
 
 export default MoviesList
