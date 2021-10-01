@@ -36,9 +36,6 @@ const Nav = () => {
           <Link to="/" className={pathname === "/" ? "active" : ""}>
             Home
           </Link>
-          <Link to="/series" className={pathname === "/series" ? "active" : ""}>
-            Series
-          </Link>
           <Link to="/movies" className={pathname === "/movies" ? "active" : ""}>
             Movies
           </Link>
@@ -104,17 +101,18 @@ const NavWrapper = styled.nav`
         list-style: none;
         letter-spacing: 2px;
         font-size: 0.9rem;
-        font-weight: 200;
+        font-weight: 300;
         padding: 0 20px;
         color: ${(props) => props.theme.fontColor};
         cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
         &.active {
-          font-weight: 350;
+          color: ${(props) => props.theme.neftlixColor};
         }
 
         &:hover {
-          font-weight: 100;
+          font-weight: 300;
         }
       }
     }
