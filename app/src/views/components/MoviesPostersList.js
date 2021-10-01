@@ -47,29 +47,31 @@ export default MoviesPostersList
 
 const Wrapper = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
+  min-height: 200px;
+  max-height: 600px;
+  /* display: flex; */
+  /* flex-direction: column; */
   margin: 5% 5% 0;
 `
 
 const TitleH1 = styled.h1`
+  /* display: block; */
   color: #fff;
   font-size: 125%;
   margin-bottom: 16px;
 `
 
 const PostersContainer = styled.div`
-  height: 460px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  column-gap: 32px;
+  column-gap: 4%;
 `
 
-const Poster = styled.div`
-  background: url(${(props) => props.bg});
-  background-position: center;
-  background-size: cover;
-  max-width: 240px;
+const Poster = styled.img`
+  content: url(${(props) => props.bg});
+  /* background-position: center;
+  background-size: cover; */
+  width: 100%;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
